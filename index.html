@@ -4,19 +4,31 @@
     <meta charset="UTF-8" />
     <title>LiveStrat</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet" />
     <style type="text/css">
+      *, *::before, *::after {
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        -webkit-app-region: no-drag;
+        cursor: default;
+      }
+
       body {
         padding: 0;
         margin: 0;
         background: #fff;
         color: #eee;
-        font-family: Calibri, sans-serif;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
       }
 
       .menu {
         padding: 8px;
+        margin-bottom: 4px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.5);
         background: rgba(0, 0, 0, 0.25);
+        display: flex;
+        justify-content: center;
       }
 
       .menu > a {
@@ -47,29 +59,42 @@
         height: 100%;
       }
 
+      .project-name {
+        color: rgba(0, 0, 0, 0.5);
+        font-weight: bold;
+      }
+
       img.strat-image {
-        background: #fff;
+        background: none;
         display: block;
         margin: 0 auto;
         width: 90%;
       }
     </style>
     <script type="text/javascript">
+      document.addEventListener('dragover', event => event.preventDefault())
+      document.addEventListener('drop', event => event.preventDefault())
+
       const { ipcRenderer } = require('electron')
 
       ipcRenderer.on('asynchronous-message', (event, arg) => {
-        document.getElementsByClassName('strat-image')[0].src = arg
+        document.getElementsByClassName('project-name')[0].innerHTML = arg.name
+        document.getElementById('background').style.background = arg.background;
+        document.getElementsByClassName('strat-image')[0].src = arg.image
       })
 
       function reload() {
         ipcRenderer.send('reload-message', 'reload')
+        document.getElementsByClassName('project-name')[0].innerHTML = "&nbsp;"
+        document.getElementById('background').style.background = "#fff";
         document.getElementsByClassName('strat-image')[0].src = ""
       }
     </script>
   </head>
-  <body>
+  <body id="background">
     <div class="menu">
-      <a onclick="javascript:reload();">Reload Projects</a>
+      <a onclick="javascript:reload();" style="position: absolute; left: 8px; top: 4px;">Reload Projects</a>
+      <span class="project-name">&nbsp;</span>
       <span class="info">Press F11 to toggle fullscreen mode</span>
     </div>
     <div class="strat-container">

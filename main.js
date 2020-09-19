@@ -1,6 +1,7 @@
 const electron = require('electron')
 const fs = require('fs')
 const http = require('http')
+const sanitizeHtml = require('sanitize-html')
 
 var server
 
@@ -46,7 +47,7 @@ function listenForTriggers(win, projects) {
 
 			var image = projectDef.project.slides[json.slide].image
 
-			win.webContents.send('asynchronous-message', `${projectDef.path}/${image}`)
+			win.webContents.send('asynchronous-message', { 'name': projectDef.project.name, 'background': projectDef.project.background, 'image': `${projectDef.path}/${image}` })
 
 			res.writeHead(200, { 'Content-Type': 'text/json' })
 			res.end('{ "status": "success" }')
@@ -80,6 +81,9 @@ function reloadProjects(callback) {
 				var projectDef = {}
 				projectDef.path = `./projects/${file.name}`
 				projectDef.project = project
+				projectDef.project.name = sanitizeHtml(projectDef.project.name, {
+					allowedTags: [], allowedAttributes: {}
+				})
 
 				projects[projectDef.project.id] = projectDef
 			} catch (err) {

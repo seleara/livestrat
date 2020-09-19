@@ -1,16 +1,26 @@
 {
   "name": "livestrat",
   "version": "1.0.0",
-  "description": "",
+  "description": "LiveStrat automatically displays appropriate slides for upcoming mechanics in FFXIV fights.",
   "main": "main.js",
   "dependencies": {},
   "devDependencies": {
-    "electron": "^10.1.2"
+    "electron": "^10.1.2",
+    "electron-builder": "^22.8.1",
+    "sanitize-html": "^1.27.4"
   },
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "author": "Seleara",
-  "license": "GPL-3.0-only"
+  "license": "GPL-3.0-only",
+  "build": {
+    "appId": "com.seleara.livestrat",
+    "productName": "LiveStrat",
+    "win": {
+      "target": "portable"
+    }
+  }
 }
