@@ -10,14 +10,12 @@
         -webkit-user-select: none;
         -webkit-user-drag: none;
         -webkit-app-region: no-drag;
-        cursor: default;
       }
 
       body {
         padding: 0;
         margin: 0;
         background: #fff;
-        color: #eee;
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
       }
@@ -31,13 +29,14 @@
         justify-content: center;
       }
 
-      .menu > a {
+      .menu a {
         font-weight: bold;
         background: #777;
         border: 1px solid #222;
         border-radius: 4px;
         padding: 0.2em 0.5em;
         cursor: pointer;
+        color: #eee;
         text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
         box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       }
@@ -52,6 +51,16 @@
       .menu > a:hover {
         border: 1px solid #1D66A8;
         background: #74B8F6;
+      }
+
+      input#port {
+        width: 48px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        outline: none;
+      }
+
+      input#port:focus {
+        border-color: rgba(0, 128, 192, 0.5);
       }
 
       .strat-container {
@@ -84,7 +93,7 @@
       })
 
       function reload() {
-        ipcRenderer.send('reload-message', 'reload')
+        ipcRenderer.send('reload-message', { port: document.getElementById('port').value })
         document.getElementsByClassName('project-name')[0].innerHTML = "&nbsp;"
         document.getElementById('background').style.background = "#fff";
         document.getElementsByClassName('strat-image')[0].src = ""
@@ -93,7 +102,10 @@
   </head>
   <body id="background">
     <div class="menu">
-      <a onclick="javascript:reload();" style="position: absolute; left: 8px; top: 4px;">Reload Projects</a>
+      <div style="position: absolute; left: 4px; top: 4px; padding: 4px; color: rgba(0, 0, 0, 0.5);">
+        Port <input type="text" id="port" value="65300" maxlength="5" />
+        <a onclick="javascript:reload();">Reload Projects</a>
+      </div>
       <span class="project-name">&nbsp;</span>
       <span class="info">Press F11 to toggle fullscreen mode</span>
     </div>

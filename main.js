@@ -5,7 +5,8 @@ const sanitizeHtml = require('sanitize-html')
 
 var server
 
-function listenForTriggers(win, projects) {
+function listenForTriggers(win, projects, arg) {
+	const port = parseInt(arg.port, 10)
 	server = http.createServer((req, res) => {
 		if (req.method !== 'POST') {
 			return
@@ -53,7 +54,7 @@ function listenForTriggers(win, projects) {
 			res.end('{ "status": "success" }')
 		})
 	})
-	server.listen(65300)
+	server.listen(port)
 	console.log("Server listening on port 65300.")
 }
 
@@ -107,7 +108,7 @@ function createWindow() {
 
 	win.loadFile('index.html')
 
-	electron.ipcMain.on('reload-message', event => {
+	electron.ipcMain.on('reload-message', (event, arg) => {
 		console.log("Reload message received.")
 		server.close(() => {
 			console.log("Server stopped.")
@@ -115,14 +116,14 @@ function createWindow() {
 				console.log("Cache cleared.")
 				reloadProjects(projects => {
 					console.log("Projects reloaded.")
-					listenForTriggers(win, projects)
+					listenForTriggers(win, projects, arg)
 				})
 			})
 		})
 	})
 
 	reloadProjects(projects => {
-		listenForTriggers(win, projects);
+		listenForTriggers(win, projects, { port: "65300" });
 	})
 }
 
